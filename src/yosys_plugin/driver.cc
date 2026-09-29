@@ -250,7 +250,8 @@ static std::string expected_diagnostic;
 #if YOSYS_MAJOR > 0 || YOSYS_MINOR > 69
 #define YOSYS_NEW_LOGGING 1
 #elif YOSYS_MAJOR == 0 && YOSYS_MINOR == 69
-#if YOSYS_COMMIT > 150
+// Have +0 to handle the case of YOSYS_COMMIT empty
+#if (YOSYS_COMMIT + 0) > 150
 #define YOSYS_NEW_LOGGING 1
 #else
 #define YOSYS_NEW_LOGGING 0

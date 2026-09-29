@@ -260,17 +260,25 @@ static std::string expected_diagnostic;
 #define YOSYS_NEW_LOGGING 0
 #endif
 
+// clang-format on
 #if YOSYS_NEW_LOGGING
-class YosysDiagnosticClient : public slang::DiagnosticClient {
+
+// The following class definition contains code adapted
+// from slang (source/diagnostics/TextDiagnosticClient.cpp)
+class YosysDiagnosticClient : public slang::DiagnosticClient
+{
 public:
 	YosysDiagnosticClient() {}
 
-	void report(const slang::ReportedDiagnostic& diag) override {
+	void report(const slang::ReportedDiagnostic &diag) override
+	{
 		writeDiagnostic(diag, diag.severity);
-		for (auto& note : diag.notes)
+		for (auto &note : diag.notes)
 			writeDiagnostic(note, slang::DiagnosticSeverity::Note);
 	}
-	void writeDiagnostic(const slang::ReportedDiagnosticInfo& diag, slang::DiagnosticSeverity severity) {
+	void writeDiagnostic(
+			const slang::ReportedDiagnosticInfo &diag, slang::DiagnosticSeverity severity)
+	{
 		slang::SmallVector<slang::SourceRange> mappedRanges;
 		engine->mapSourceRanges(diag.location, diag.ranges, mappedRanges);
 
@@ -294,18 +302,21 @@ public:
 		}
 	}
 	void formatDiag(slang::SourceLocation loc, std::span<const slang::SourceRange> ranges,
-										slang::DiagnosticSeverity severity, std::string message,
-										std::string_view optionName) {
+			slang::DiagnosticSeverity severity, std::string message, std::string_view optionName)
+	{
 		bool hasLocation = loc.buffer() != slang::SourceLocation::NoLocation.buffer();
-		auto src = hasLocation ? LogSourceLocation(getFileName(loc),sourceManager->getLineNumber(loc)) : LogSourceLocation{};
+		auto src = hasLocation
+						   ? LogSourceLocation(getFileName(loc), sourceManager->getLineNumber(loc))
+						   : LogSourceLocation{};
 		if (!optionName.empty())
 			message += stringf(" [-W%s]", optionName);
-		if (severity==slang::DiagnosticSeverity::Warning) {
-			log_file_warning(src,"%s\n",message);
-		} else if (severity==slang::DiagnosticSeverity::Error || severity==slang::DiagnosticSeverity::Fatal) {
-			log_file_nonfatal_error(src,"%s\n",message);
+		if (severity == slang::DiagnosticSeverity::Warning) {
+			log_file_warning(src, "%s\n", message);
+		} else if (severity == slang::DiagnosticSeverity::Error ||
+				   severity == slang::DiagnosticSeverity::Fatal) {
+			log_file_nonfatal_error(src, "%s\n", message);
 		} else {
-			log_file_info(src,"%s\n",message);
+			log_file_info(src, "%s\n", message);
 		}
 
 		constexpr size_t MaxLineLengthToPrint = 4096;
@@ -316,12 +327,13 @@ public:
 				slang::SmallVector<std::pair<size_t, size_t>, 4> invalidRanges;
 				slang::SourceSnippet snippet(line, 8, ranges, loc, col, invalidRanges);
 				log("%s\n", snippet.getSnippetLine());
-				log_highlight("%s\n", snippet.getHighlightLine());				
+				log_highlight("%s\n", snippet.getHighlightLine());
 			}
 		}
 	}
 };
 #endif
+// clang-format off
 
 struct SlangFrontend : Frontend
 {

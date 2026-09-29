@@ -5,7 +5,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 # can refer to the hash here directly.
 # Bump when the submodule is updated. SLANG_VERSION_PATCH/HASH are
 # normally derived from `git describe`
-SLANG_VERSION_MAJOR = 11
+SLANG_VERSION_MAJOR = 12
 SLANG_VERSION_MINOR = 0
 SLANG_VERSION_PATCH = 0
 SLANG_VERSION_HASH = "97a2b64cb23cf78d2f65eea729700c779207bb13"
